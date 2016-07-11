@@ -1,2 +1,2 @@
 # politics_analysis
-political comments analysis
+political comment analysis

@@ -1,0 +1,9 @@
+numpy
+tables
+pandas
+pylint
+ipdb
+scipy
+scikit-learn
+gensim
+jieba
