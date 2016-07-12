@@ -27,10 +27,12 @@ def get_accuracy(pred_label, truth_label):
 def get_logloss(pred_prob, truth_label):
     logloss_sum = 0
     for idx, class_n in enumerate(np.unique(truth_label)):
-        logloss = np.sum(pred_prob[:, idx]*(truth_label==class_n)
-            + (1-pred_prob[:, idx])*(truth_label!=class_n))
+        logloss = np.sum(
+            np.log2(pred_prob[:, idx])*(truth_label==class_n)
+            + np.log2(1-pred_prob[:, idx])*(truth_label!=class_n)
+        )
 
-        logloss_sum += logloss/np.sum(truth_label==class_n)
+        logloss_sum += -1*logloss/np.sum(truth_label==class_n)
 
     return logloss_sum
 

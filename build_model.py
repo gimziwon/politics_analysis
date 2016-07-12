@@ -2,6 +2,7 @@
 import numpy as np
 import pandas as pd
 import gensim
+import sys
 import json
 import re
 import jieba
@@ -43,7 +44,7 @@ def train_with_dummy(result_table, X, y, preprocess_model_name):
 	return result_table
 
 def train_with_logistic_regression(result_table, X, y, preprocess_model_name):
-	for C in range(-3, 3):
+	for C in range(-5, 6):
 		params = {'C': 10**C, 'random_state': 1234}
 		experiement_result = training.cross_validation(X, y, n_fold=5, 
 			model_class=LogisticRegression, params = params)
@@ -55,7 +56,7 @@ def train_with_logistic_regression(result_table, X, y, preprocess_model_name):
 	return result_table
 
 def train_with_random_forest(result_table, X, y, preprocess_model_name):
-	for max_depth in np.arange(2,20,0.5):
+	for max_depth in np.arange(2,30.5,0.5):
 		params = {'max_depth': max_depth, 'n_estimators': 1000, 'random_state': 1234}
 		experiement_result = training.cross_validation(X, y, n_fold=5, 
 			model_class=RandomForestClassifier, params=params)
@@ -92,24 +93,26 @@ def main():
 	result_table = train_with_random_forest(result_table, X, y, 'tfidf')
 	result_table = train_with_logistic_regression(result_table, X, y, 'tfidf')
 
+	'''
 	# preprocess with lda model
-	params = {"corpus": data_corpus, "num_topics": 100}
-	X, y = convert_to_X_y(LdaModel, params, data_corpus, answer)
-	result_table = train_with_dummy(result_table, X, y, 'lda')
-	result_table = train_with_random_forest(result_table, X, y, 'lda')
-	result_table = train_with_logistic_regression(result_table, X, y, 'lda')
+	for num_topics in [10, 50, 100, 150, 200]:
+		params = {"corpus": data_corpus, "num_topics": num_topics}
+		X, y = convert_to_X_y(LdaModel, params, data_corpus, answer)
+		result_table = train_with_dummy(result_table, X, y, 'lda_'+str(params['num_topics']))
+		result_table = train_with_random_forest(result_table, X, y, 'lda_'+str(params['num_topics']))
+		result_table = train_with_logistic_regression(result_table, X, y, 'lda_'+str(params['num_topics']))
 	
-
 	# preprocess with lsi model
-	params = {"corpus": data_corpus, "num_topics": 100}
-	X, y = convert_to_X_y(LsiModel, params, data_corpus, answer)
-	result_table = train_with_dummy(result_table, X, y, 'lsi')
-	result_table = train_with_random_forest(result_table, X, y, 'lsi')
-	result_table = train_with_logistic_regression(result_table, X, y, 'lsi')
+	for num_topics in [10, 50, 100, 150, 200]:
+		params = {"corpus": data_corpus, "num_topics": num_topics}
+		X, y = convert_to_X_y(LsiModel, params, data_corpus, answer)
+		result_table = train_with_dummy(result_table, X, y, 'lsi_'+str(params['num_topics']))
+		result_table = train_with_random_forest(result_table, X, y, 'lsi_'+str(params['num_topics']))
+		result_table = train_with_logistic_regression(result_table, X, y, 'lsi_'+str(params['num_topics']))
 
-	result_table.to_csv('result.csv', sep='\t')
-
-	import ipdb; ipdb.set_trace()
+	'''
+	output_file = sys.argv[1]
+	result_table.to_csv(output_file, sep='\t')
 	
 def build_corpus_dictionary():
 

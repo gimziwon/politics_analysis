@@ -17,6 +17,9 @@ from gensim.models.tfidfmodel import TfidfModel
 import training
 
 def load_json_file(input_path):
+    """
+    json file must be either a json array or a json object
+    """
     json_file = open(input_path)
     json_array = json.load(json_file)
 

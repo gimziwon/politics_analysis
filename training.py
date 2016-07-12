@@ -22,12 +22,12 @@ def cross_validation(X, y, n_fold, model_class, params = {}):
         model.set_params(**params)
         model.fit(X_train, y_train)
 
-        train_pred_prob = model.predict_log_proba(X_train)
+        train_pred_prob = model.predict_proba(X_train)
         train_pred_label = model.predict(X_train)
         train_stats = evaluation.get_statistics(train_pred_prob, 
             train_pred_label, y_train)
 
-        test_pred_prob = model.predict_log_proba(X_test)
+        test_pred_prob = model.predict_proba(X_test)
         test_pred_label = model.predict(X_test)
         test_stats = evaluation.get_statistics(test_pred_prob, 
             test_pred_label, y_test)
